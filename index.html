@@ -1025,34 +1025,40 @@
     </div>
   </div>
   <script>
-    document.addEventListener("DOMC onten      ded", function () {
-      const musicasCounter = document.getElemen      d("counter-musicas");
-      const pastasCounter = document.getElem      yId("counter-pastas");
+    document.addEventListener("DOMContentLoaded", function () {
+      const musicasCounter = document.getElementById("counter-musicas");
+      const pastasCounter = document.getElementById("counter-pastas");
 
       function animateValue(obj, start, end, duration) {
         let startTimestamp = null;
-        (timestamp) => {
-          if (!startTimestamp) mp = timestamp;
-          const progress = Math.min((timestamp - startT          duration, 1);
-          obj.innerHTML = Math.floor(progress * (end - start)          "<!-- -->+";
-          1) {
-      window.requestAnim          tep);
-    }
+        const step = (timestamp) => {
+          if (!startTimestamp) startTimestamp = timestamp;
+          const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+          obj.innerHTML = Math.floor(progress * (end - start) + start) + "<!-- -->+";
+          if (progress < 1) {
+            window.requestAnimationFrame(step);
+          }
         };
-    window.requestAnimat      ram      ep);
+        window.requestAnimationFrame(step);
       }
 
-    const observer = new IntersectionObserver((entries) => {
-        entries          ry => {
-        if (entry.            {
-          if (entry.target.id === 'counter-musicas' && !entry.target.datase                      animateValue(entry.target, 0, 7000, entry.target.dataset.animated = true                          try.target.id === 'counter-pastas' && !entry.target.dataset.animated) {
-                    (entry.target, 0, 300, 2500);
-    et.animated = true;
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            if (entry.target.id === 'counter-musicas' && !entry.target.dataset.animated) {
+              animateValue(entry.target, 0, 7000, 2500);
+              entry.target.dataset.animated = true;
             }
-                }) threshold: 0.;
+            if (entry.target.id === 'counter-pastas' && !entry.target.dataset.animated) {
+              animateValue(entry.target, 0, 300, 2500);
+              entry.target.dataset.animated = true;
+            }
+          }
+        });
+      }, { threshold: 0.1 });
 
-    if (musicasCount      observer.observe(musicasCounter);
-    if (pastasCoun       observer.observe(pastasCounter);
+      if (musicasCounter) observer.observe(musicasCounter);
+      if (pastasCounter) observer.observe(pastasCounter);
     });
   </script>
 </body>
